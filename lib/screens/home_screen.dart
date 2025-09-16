@@ -17,27 +17,25 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
-    if (index == 1) { // Browse Screen
+    setState(() {
+      _selectedIndex = index;
+    });
+    if (index == 1) {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const BrowseScreen()),
-      );
-    } else if (index == 2) { // Sell Screen
+      ).then((_) => setState(() => _selectedIndex = 0));
+    } else if (index == 2) {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const PostItemScreen()),
-      );
-    } else if (index == 3) { // Messages Screen
+      ).then((_) => setState(() => _selectedIndex = 0));
+    } else if (index == 3) {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const MessagesScreen()),
-      );
-    } else if (index == 4) { // Profile Screen
-       Navigator.of(context).push(
+      ).then((_) => setState(() => _selectedIndex = 0));
+    } else if (index == 4) {
+      Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const ProfileScreen()),
-      );
-    }
-    else {
-      setState(() {
-        _selectedIndex = index; // For Home tab
-      });
+      ).then((_) => setState(() => _selectedIndex = 0));
     }
   }
 
@@ -48,20 +46,10 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leadingWidth: 0,
+        automaticallyImplyLeading: false,
         title: Row(
           children: [
-            // Changed from Icon to Image.asset for the logo
             Image.asset('assets/images/logo.png', height: 35),
-            const SizedBox(width: 8),
-            const Text(
-              'PartSmart', // Updated app name
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 22,
-              ),
-            ),
           ],
         ),
         actions: [
@@ -74,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const LoginScreen()),
-                (Route<dynamic> route) => false,
+                (route) => false,
               );
             },
           ),
@@ -233,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Expanded(
           child: ElevatedButton.icon(
             onPressed: () {
-               Navigator.of(context).push(
+              Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => const PostItemScreen()),
               );
             },
@@ -241,21 +229,6 @@ class _HomeScreenState extends State<HomeScreen> {
             label: const Text('Sell Item'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              textStyle: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.favorite),
-            label: const Text('Donate'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -281,10 +254,10 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ItemDetailsScreen(
-              imageUrls: [imageUrl], // <-- FIXED: pass as a list
               title: title,
               price: price,
               status: status,
+              imageUrls: [imageUrl], // Only this line for images
             ),
           ),
         );
@@ -376,7 +349,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Row(
                         children: [
-                          Icon(Icons.access_time, color: Colors.grey, size: 16),
+                          const Icon(Icons.access_time, color: Colors.grey, size: 16),
                           const SizedBox(width: 4),
                           Text(
                             time,
