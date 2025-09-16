@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'chat_details_screen.dart'; // Import the chat details screen
+import 'chat_details_screen.dart'; // Corrected import
 
 class MessagesScreen extends StatelessWidget {
   const MessagesScreen({super.key});
@@ -33,7 +33,7 @@ class MessagesScreen extends StatelessWidget {
       body: ListView(
         children: [
           _buildSearchBar(),
-          _buildActiveConversations(context), // MODIFIED: This method is updated
+          _buildActiveConversations(context),
           _buildRecentConversations(context),
         ],
       ),
@@ -63,12 +63,10 @@ class MessagesScreen extends StatelessWidget {
     );
   }
 
-  // MODIFIED: 'buildStories' is now 'buildActiveConversations'
   Widget _buildActiveConversations(BuildContext context) {
-    // A list of active users to display
     final activeUsers = [
-      {'name': 'John', 'avatarUrl': 'https://i.pravatar.cc/150?img=1'},
-      {'name': 'Sarah', 'avatarUrl': 'https://i.pravatar.cc/150?img=2'},
+      {'name': 'John', 'avatarUrl': 'assets/images/john.jpg'},
+      {'name': 'Sarah', 'avatarUrl': 'assets/images/sarah.jpg'},
       {'name': 'Mike', 'avatarUrl': 'https://i.pravatar.cc/150?img=3'},
       {'name': 'Emma', 'avatarUrl': 'https://i.pravatar.cc/150?img=4'},
       {'name': 'David', 'avatarUrl': 'https://i.pravatar.cc/150?img=5'},
@@ -94,18 +92,23 @@ class MessagesScreen extends StatelessWidget {
       ),
     );
   }
-  
-  // MODIFIED: This is the new avatar widget that is clickable
+
   Widget _buildActiveUserAvatar({
     required BuildContext context,
     required String imageUrl,
     required String name,
   }) {
+    final ImageProvider imageProvider;
+    if (imageUrl.startsWith('http')) {
+      imageProvider = NetworkImage(imageUrl);
+    } else {
+      imageProvider = AssetImage(imageUrl);
+    }
+
     return Padding(
       padding: const EdgeInsets.only(right: 16.0),
       child: GestureDetector(
         onTap: () {
-          // Navigate to the chat screen when tapped
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => ChatDetailsScreen(
               name: name,
@@ -120,7 +123,7 @@ class MessagesScreen extends StatelessWidget {
               backgroundColor: Colors.green,
               child: CircleAvatar(
                 radius: 28,
-                backgroundImage: NetworkImage(imageUrl),
+                backgroundImage: imageProvider,
               ),
             ),
             const SizedBox(height: 8),
@@ -145,9 +148,9 @@ class MessagesScreen extends StatelessWidget {
           _buildConversationTile(
             context: context,
             name: 'John Smith',
-            message: 'Thanks for the quick delivery! The plants look amazing.',
+            message: 'Thanks for the quick delivery!',
             time: '2m',
-            avatarUrl: 'https://i.pravatar.cc/150?img=1',
+            avatarUrl: 'assets/images/john.jpg', // Using local asset
             isOnline: true,
             hasUnread: true,
           ),
@@ -156,15 +159,15 @@ class MessagesScreen extends StatelessWidget {
             name: 'Sarah Johnson',
             message: 'Do you have any organic fertilizers available?',
             time: '15m',
-            avatarUrl: 'https://i.pravatar.cc/150?img=2',
+            avatarUrl: 'assets/images/sarah.jpg', // Using local asset
             isOnline: false,
           ),
           _buildConversationTile(
             context: context,
             name: 'Mike Wilson',
-            message: 'Perfect! I\'ll take 5 of those bamboo planters.',
+            message: 'Perfect! I\'ll take 5 of those.',
             time: '1h',
-            avatarUrl: 'https://i.pravatar.cc/150?img=3',
+            avatarUrl: 'https://i.pravatar.cc/150?img=3', // Using network image
             isOnline: true,
             unreadCount: 2,
           ),
@@ -183,8 +186,16 @@ class MessagesScreen extends StatelessWidget {
     bool hasUnread = false,
     int unreadCount = 0,
   }) {
+    final ImageProvider imageProvider;
+    if (avatarUrl.startsWith('http')) {
+      imageProvider = NetworkImage(avatarUrl);
+    } else {
+      imageProvider = AssetImage(avatarUrl);
+    }
+
     return InkWell(
       onTap: () {
+        // Correctly navigates to ChatDetailsScreen
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => ChatDetailsScreen(
             name: name,
@@ -200,7 +211,7 @@ class MessagesScreen extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 28,
-                  backgroundImage: NetworkImage(avatarUrl),
+                  backgroundImage: imageProvider,
                 ),
                 if (isOnline)
                   Positioned(

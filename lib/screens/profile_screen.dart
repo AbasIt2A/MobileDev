@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'my_listings_screen.dart'; // Import the new listings screen
+import 'my_listings_screen.dart';
+import 'my_purchases_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -14,11 +15,11 @@ class ProfileScreen extends StatelessWidget {
             expandedHeight: 250.0,
             floating: false,
             pinned: true,
-            backgroundColor: Colors.white, // Changed for better pinning transition
+            backgroundColor: Colors.white,
             flexibleSpace: FlexibleSpaceBar(
               background: _buildProfileHeader(context),
             ),
-            automaticallyImplyLeading: false, // Remove default back button
+            automaticallyImplyLeading: false,
           ),
           SliverList(
             delegate: SliverChildListDelegate(
@@ -33,7 +34,6 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(height: 24),
                       _buildSectionHeader('My Activity'),
                       const SizedBox(height: 8),
-                      // This ListTile is now clickable
                       _buildListTile(
                         icon: Icons.format_list_bulleted,
                         title: 'My Listings',
@@ -53,7 +53,11 @@ class ProfileScreen extends StatelessWidget {
                         subtitle: 'Track your orders',
                         trailingText: '2 Recent',
                         trailingColor: Colors.blue,
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => const MyPurchasesScreen()),
+                          );
+                        },
                       ),
                       const SizedBox(height: 24),
                       _buildSectionHeader('Settings'),
@@ -109,8 +113,8 @@ class ProfileScreen extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF00C6FF), // Lighter blue
-            Color(0xFF0072FF), // Darker blue
+            Color(0xFF00C6FF),
+            Color(0xFF0072FF),
           ],
         ),
       ),
@@ -146,7 +150,8 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   const CircleAvatar(
                     radius: 35,
-                    backgroundImage: AssetImage('assets/images/profile.png'),
+                    // MODIFIED: Updated to use your new profile image
+                    backgroundImage: AssetImage('assets/images/ramon_profile.jpg'),
                   ),
                   Positioned(
                     bottom: 0,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'item_details_screen.dart';
-// lemuel pala utog
+
 class BrowseScreen extends StatefulWidget {
   const BrowseScreen({super.key});
 
@@ -134,7 +134,8 @@ class _BrowseScreenState extends State<BrowseScreen> {
   }
 
   Widget _buildTagFilters() {
-    final tags = ['All Items', 'Free', 'Working', 'For Parts', 'Phones', 'Laptops', 'Repair', 'New'];
+    // MODIFIED: Removed 'Free' and 'Repair' from the tags list
+    final tags = ['All Items', 'Working', 'For Parts', 'Phones', 'Laptops', 'New'];
     return SizedBox(
       height: 40,
       child: ListView.builder(
@@ -195,20 +196,22 @@ class _BrowseScreenState extends State<BrowseScreen> {
           statusColor: Colors.green,
           showViewButton: true,
         ),
+        // MODIFIED: Item status and price updated
         _buildItemCard(
-          imageUrl: 'assets/images/ipad_mini.jpg',
+          imageUrl: 'assets/images/gadget4.jpg',
           title: 'iPad Mini',
-          price: 'FREE',
-          status: 'Free',
-          statusColor: Colors.blue,
-          showClaimButton: true,
+          price: '\$90',
+          status: 'Working',
+          statusColor: Colors.green,
+          showViewButton: true,
         ),
+        // MODIFIED: Item status updated
         _buildItemCard(
-          imageUrl: 'assets/images/ps4_console.jpg',
+          imageUrl: 'assets/images/gadget5.jpg',
           title: 'PS4 Console',
           price: '\$85',
-          status: 'Repair',
-          statusColor: Colors.orange,
+          status: 'Working',
+          statusColor: Colors.green,
           showViewButton: true,
         ),
       ],
@@ -256,10 +259,10 @@ class _BrowseScreenState extends State<BrowseScreen> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ItemDetailsScreen(
-              imageUrls: [imageUrl], // <-- FIXED: pass as a list
               title: title,
               price: price,
               status: status,
+              imageUrls: [imageUrl], // <-- FIXED: use imageUrls
             ),
           ),
         );
@@ -270,140 +273,124 @@ class _BrowseScreenState extends State<BrowseScreen> {
           borderRadius: BorderRadius.circular(15),
           border: Border.all(color: Colors.grey.shade200),
         ),
-        child: isListView
-            ? Row(
-                children: [
-                  _buildImageStack(imageUrl, status, statusColor, isListView),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: SizedBox(
-                        height: 100,
-                        child: _buildItemDetails(title, description, price),
-                      ),
-                    ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15),
                   ),
-                ],
-              )
-            : Column(
+                  child: Image.asset(
+                    imageUrl,
+                    height: 120,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        height: 120,
+                        color: Colors.grey[200],
+                        child: const Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
+                      );
+                    },
+                  ),
+                ),
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(color: statusColor, borderRadius: BorderRadius.circular(10)),
+                    child: Text(status, style: const TextStyle(color: Colors.white, fontSize: 12)),
+                  ),
+                ),
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.7), shape: BoxShape.circle),
+                    child: const Icon(Icons.favorite_border, color: Colors.black, size: 20),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildImageStack(imageUrl, status, statusColor, isListView),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: _buildItemDetails(title, description, price, showViewButton: showViewButton, showClaimButton: showClaimButton),
-                    ),
+                  Text(
+                    title,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  if (isListView) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      description ?? '',
+                      style: const TextStyle(color: Colors.grey, fontSize: 12),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                  const SizedBox(height: 8),
+                  Text(
+                    price,
+                    style: const TextStyle(color: Colors.green, fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  if (showViewButton) ...[
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ItemDetailsScreen(
+                                title: title,
+                                price: price,
+                                status: status,
+                                imageUrls: [imageUrl],
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                        ),
+                        child: const Text('View', style: TextStyle(fontSize: 14)),
+                      ),
+                    ),
+                  ],
+                  if (showClaimButton) ...[
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                        ),
+                        child: const Text('Claim', style: TextStyle(fontSize: 14)),
+                      ),
+                    ),
+                  ],
                 ],
               ),
+            ),
+          ],
+        ),
       ),
-    );
-  }
-
-  Widget _buildImageStack(String imageUrl, String status, Color statusColor, bool isListView) {
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: isListView
-              ? const BorderRadius.all(Radius.circular(15))
-              : const BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-          child: Image.asset(
-            imageUrl,
-            height: 120,
-            width: isListView ? 120 : double.infinity,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                height: 120,
-                width: isListView ? 120 : double.infinity,
-                color: Colors.grey[200],
-                child: const Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
-              );
-            },
-          ),
-        ),
-        Positioned(
-          top: 10,
-          left: 10,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: statusColor, borderRadius: BorderRadius.circular(10)),
-            child: Text(status, style: const TextStyle(color: Colors.white, fontSize: 12)),
-          ),
-        ),
-        Positioned(
-          top: 10,
-          right: 10,
-          child: Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(color: Colors.white.withOpacity(0.7), shape: BoxShape.circle),
-            child: const Icon(Icons.favorite_border, color: Colors.black, size: 20),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildItemDetails(String title, String? description, String price, {bool showViewButton = false, bool showClaimButton = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        if (description != null) ...[
-          const SizedBox(height: 4),
-          Text(
-            description,
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-        const Spacer(),
-        Text(
-          price,
-          style: const TextStyle(color: Colors.green, fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        if (showViewButton) ...[
-          const SizedBox(height: 8),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                // The main onTap is on the parent GestureDetector
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: const EdgeInsets.symmetric(vertical: 8),
-              ),
-              child: const Text('View', style: TextStyle(fontSize: 14)),
-            ),
-          ),
-        ],
-        if (showClaimButton) ...[
-          const SizedBox(height: 8),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: const EdgeInsets.symmetric(vertical: 8),
-              ),
-              child: const Text('Claim', style: TextStyle(fontSize: 14)),
-            ),
-          ),
-        ],
-      ],
     );
   }
 }

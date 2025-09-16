@@ -17,25 +17,26 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
     if (index == 1) {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const BrowseScreen()),
-      ).then((_) => setState(() => _selectedIndex = 0));
+      );
     } else if (index == 2) {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const PostItemScreen()),
-      ).then((_) => setState(() => _selectedIndex = 0));
+      );
     } else if (index == 3) {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const MessagesScreen()),
-      ).then((_) => setState(() => _selectedIndex = 0));
+      );
     } else if (index == 4) {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const ProfileScreen()),
-      ).then((_) => setState(() => _selectedIndex = 0));
+      );
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
     }
   }
 
@@ -62,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const LoginScreen()),
-                (route) => false,
+                (Route<dynamic> route) => false,
               );
             },
           ),
@@ -70,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.only(right: 16.0),
             child: CircleAvatar(
               radius: 18,
-              backgroundImage: AssetImage('assets/images/profile.png'),
+              backgroundImage: AssetImage('assets/images/ramon_profile.jpg'),
             ),
           ),
         ],
@@ -257,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: title,
               price: price,
               status: status,
-              imageUrls: [imageUrl], // Only this line for images
+              imageUrls: [imageUrl], // <-- FIXED: use imageUrls
             ),
           ),
         );
@@ -349,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Row(
                         children: [
-                          const Icon(Icons.access_time, color: Colors.grey, size: 16),
+                          Icon(Icons.access_time, color: Colors.grey, size: 16),
                           const SizedBox(width: 4),
                           Text(
                             time,
